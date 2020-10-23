@@ -1,0 +1,33 @@
+{
+  "cargas": [
+    {
+      "quantidade": 100,
+      "comprimento": 200,
+      "largura": 1.5,
+      "altura": 2,
+      "peso": 15000,
+      "perigosa": 0,
+      "img1": "wmswLabwd4ZJzk9yNRRVhKXwCy6JY2sqTmggIFqf.jpeg",
+      "img2": "MrDGt8tYI2PxSgS22yHMAkLCUY874KLkbEFbdmCF.jpeg",
+      "img3": null,
+      "controlTemp": 0
+    }
+  ],
+  "origem": {
+    "responsavel": "Ricardo",
+    "telefone": "942682194",
+    "endereco": "Avenida Noronha",
+    "provinciaid": 5,
+    "municipioid": 36,
+    "dataCarregamento": "2020/10/20 20:00:46"
+  },
+  "destino": {
+    "responsavel": "Walter",
+    "telefone": "942682194",
+    "endereco": "Av. São Mateus",
+    "provinciaid": 15,
+    "municipioid": 130,
+    "dataEntrega": "2020/10/21 7:00:46"
+  },
+  "obs": null
+}
