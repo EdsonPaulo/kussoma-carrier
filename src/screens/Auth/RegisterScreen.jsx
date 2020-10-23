@@ -28,7 +28,6 @@ const RegisterScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { register } = useContext(authContext);
-  const role = route.params?.role;
 
   const [submiting, setSubmiting] = useState(false);
   const [step, setStep] = useState(1);
@@ -375,7 +374,7 @@ const RegisterScreen = () => {
             Kussoma
           </Text>
           <Text color={colors.textDark} marginVertical="0">
-            para {role === 'ROLE_CLIENTE' ? 'cliente' : 'motorista'}
+            para motorista
           </Text>
         </View>
         <View />

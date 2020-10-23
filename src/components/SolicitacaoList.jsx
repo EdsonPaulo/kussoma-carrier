@@ -21,7 +21,7 @@ const SolicitacaoList = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [solicitacoes, setSolicitacoes] = useState([]);
 
-  const { role, token } = useContext(authContext);
+  const { token } = useContext(authContext);
 
   const onRefresh = useCallback(() => {
     if (isMounted) {
@@ -81,15 +81,9 @@ const SolicitacaoList = () => {
     return (
       <Container style={{ alignItems: 'center' }}>
         <Icon name="inbox" size={40} color={colors.grayDark} />
-        {role === 'ROLE_CLIENTE' ? (
-          <Text fontSize="16px" color={colors.grayDark}>
-            Nenhuma solicitação pendente!
-          </Text>
-        ) : (
-          <Text fontSize="16px" color={colors.grayDark}>
-            Não há nenhuma solicitação de frete!
-          </Text>
-        )}
+        <Text fontSize="16px" color={colors.grayDark}>
+          Não há nenhuma solicitação de frete!
+        </Text>
         <Icon
           style={{ position: 'absolute', top: 10, right: 10 }}
           name="refresh"

@@ -24,7 +24,7 @@ const PropostaList = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [propostas, setPropostas] = useState([]);
-  const { role, user, token } = useContext(authContext);
+  const { token } = useContext(authContext);
 
   const onRefresh = useCallback(() => {
     if (isMounted) {
@@ -37,8 +37,7 @@ const PropostaList = () => {
     if (loading || refreshing) return;
     setLoading(true);
     try {
-      const API_URL_ENDPOINT =
-        role === 'ROLE_CLIENTE' ? `/propostas_cliente` : `/propostas_entidade`;
+      const API_URL_ENDPOINT = `/propostas_entidade`;
 
       const response = await api(token).get(API_URL_ENDPOINT);
       console.log('Lista de Propostas');
@@ -46,9 +45,7 @@ const PropostaList = () => {
       if (response.data && isMounted) {
         setLoading(false);
         setRefreshing(false);
-        setPropostas(
-          role === 'ROLE_CLIENTE' ? response.data?.propostas : response.data,
-        );
+        setPropostas(response.data);
       }
     } catch (error) {
       console.log(error + ' ==> erro');
@@ -127,68 +124,6 @@ const PropostaList = () => {
     );
   };
 
-  const rejeitarProposta = solicitacaoId => {
-    Alert.alert(
-      'Cancelar Proposta',
-      'Tem certeza que quer cancelar a sua proposta?',
-      [
-        { text: 'Não', style: 'cancel' },
-        {
-          text: 'Sim',
-          onPress: async () => {
-            console.log(`/cancelar_proposta/${solicitacaoId}`);
-            // return
-            try {
-              setProcessing(true);
-              const response = await api(token).post(
-                `/cancelar_proposta/${solicitacaoId}`,
-              );
-              if (response.data) {
-                console.log('Proposta cancelada!');
-                getPropostaList();
-              }
-            } catch (error) {
-              console.log(error);
-            } finally {
-              setProcessing(false);
-            }
-          },
-        },
-      ],
-      { cancelable: true },
-    );
-  };
-
-  const aceitarProposta = (solicitacaoId, proposta) => {
-    Alert.alert(
-      'Aceitar Proposta',
-      `Deseja aceitar a proposta de ${proposta.nome} de ${proposta.valor} Kz?`,
-      [
-        { text: 'Não', style: 'cancel' },
-        {
-          text: 'Sim',
-          onPress: async () => {
-            try {
-              const response = await api(token).post(
-                `/aceitar_proposta/${proposta.solicitacaoId}`,
-                {
-                  entidadeId: proposta.id,
-                },
-              );
-              if (response.data) {
-                console.log('Proposta aceite!');
-                getPropostaList();
-              }
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-      ],
-      { cancelable: true },
-    );
-  };
-
   const PropostaCard = proposta => {
     return (
       <Card style={{ padding: 5, elevation: 5, marginBottom: 15 }}>
@@ -257,67 +192,6 @@ const PropostaList = () => {
     );
   };
 
-  const PropostaClienteCard = propostasSolicitacao => (
-    <List.Accordion
-      title={`S0${propostasSolicitacao?.id}`}
-      titleStyle={{ fontFamily: 'RobotoSlab_600SemiBold', fontSize: 16 }}
-      id={propostasSolicitacao?.id}
-      description={`Propostas feitas na solicitação ${propostasSolicitacao?.id}`}
-      style={{
-        backgroundColor: 'white',
-        elevation: 3,
-        borderRadius: 8,
-        marginBottom: 10,
-      }}
-    >
-      <View style={{ marginBottom: 8, paddingHorizontal: 15 }}>
-        {propostasSolicitacao?.propostas?.map((proposta, index) => (
-          <View style={styles.clientePropostaCard} key={index}>
-            <Text color={colors.grayDark}>
-              {convertDateDM(proposta.dataProposta)}
-            </Text>
-            <View style={{ alignItems: 'center' }}>
-              <Text fontSize="16px" color={colors.grayDark}>
-                Responsável
-              </Text>
-              <Text fontSize="18px" bold>
-                {proposta?.nome}
-              </Text>
-            </View>
-            <View style={{ marginVertical: 5, alignItems: 'center' }}>
-              <Text fontSize="16px" color={colors.grayDark}>
-                Valor
-              </Text>
-              <Text fontSize="18px" bold color={colors.success}>
-                {convertMoney(proposta?.valor)}
-              </Text>
-            </View>
-            <RowView justifyContent="center">
-              <Button
-                mode="contained"
-                style={{ backgroundColor: colors.alert, marginRight: 10 }}
-                onPress={() =>
-                  rejeitarProposta(propostasSolicitacao.id, proposta)
-                }
-              >
-                Rejeitar
-              </Button>
-
-              <Button
-                mode="contained"
-                onPress={() =>
-                  aceitarProposta(propostasSolicitacao.id, proposta)
-                }
-              >
-                Aceitar
-              </Button>
-            </RowView>
-          </View>
-        ))}
-      </View>
-    </List.Accordion>
-  );
-
   useEffect(() => {
     getPropostaList();
 
@@ -336,34 +210,23 @@ const PropostaList = () => {
   if (propostas.length == 0) {
     return (
       <Container style={{ alignItems: 'center' }}>
-        {role === 'ROLE_CLIENTE' ? (
-          <>
-            <Icon name="inbox" size={40} color={colors.grayDark} />
-            <Text fontSize="18px" textAlign="center" color={colors.grayDark}>
-              Nenhuma proposta para as suas solicitações!
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text fontSize="16px" style={{}} color={colors.grayDark}>
-              Não tem nenhuma proposta pendente!
-            </Text>
-            <Text
-              fontSize="16px"
-              style={{ marginBottom: 15 }}
-              color={colors.grayDark}
-            >
-              Veja as recentes solicitações e faça proposta
-            </Text>
+        <Text fontSize="16px" style={{}} color={colors.grayDark}>
+          Não tem nenhuma proposta pendente!
+        </Text>
+        <Text
+          fontSize="16px"
+          style={{ marginBottom: 15 }}
+          color={colors.grayDark}
+        >
+          Veja as recentes solicitações e faça proposta
+        </Text>
 
-            <Button
-              mode="contained"
-              onPress={() => navigation.navigate('solicitacoes')}
-            >
-              Ver Trabalhos
-            </Button>
-          </>
-        )}
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('solicitacoes')}
+        >
+          Ver Trabalhos
+        </Button>
         <Icon
           style={{ position: 'absolute', top: 10, right: 10 }}
           name="refresh"
@@ -380,11 +243,7 @@ const PropostaList = () => {
       <FlatList
         data={propostas}
         contentContainerStyle={{ padding: 15 }}
-        renderItem={({ item }) =>
-          role === 'ROLE_CLIENTE'
-            ? PropostaClienteCard({ ...item })
-            : PropostaCard({ ...item })
-        }
+        renderItem={({ item }) => PropostaCard({ ...item })}
         keyExtractor={(item, index) => index.toString()}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

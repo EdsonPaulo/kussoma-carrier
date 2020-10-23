@@ -48,11 +48,7 @@ export default SideBar = () => {
             {user?.nome}
           </Text>
           <Text textAlign="left">
-            {role === 'ROLE_CLIENTE'
-              ? 'Cliente'
-              : role === 'ROLE_MOTORISTA'
-              ? 'Motorista'
-              : 'Motorista Autónomo'}
+            {role === 'ROLE_MOTORISTA' ? 'Motorista' : 'Motorista Autónomo'}
           </Text>
           <Text marginVertical="0px" textAlign="left">
             {user?.telefone || user?.email}
@@ -72,19 +68,6 @@ export default SideBar = () => {
             <Text>Página Inicial</Text>
           </RowView>
         </RectButton>
-        {role !== 'ROLE_CLIENTE' ? null : (
-          <RectButton
-            style={styles.btn}
-            onPress={() => {
-              navigation.navigate('freteCreate');
-            }}
-          >
-            <RowView>
-              <MaterialCommunityIcons name="plus" style={styles.icons} />
-              <Text>Solicitar Frete</Text>
-            </RowView>
-          </RectButton>
-        )}
 
         <RectButton
           style={styles.btn}
