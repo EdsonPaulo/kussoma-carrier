@@ -1,19 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { View, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { List, Divider, Button, Chip } from 'react-native-paper';
-
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { ScrollView, View } from 'react-native';
+import { Chip, Divider } from 'react-native-paper';
+import { HeaderBar } from '../../components';
 import { colors } from '../../constants';
-import { SafeArea, Text, RowView, Container } from '../../constants/styles';
-import { CustomInput, CustomButton, HeaderBar } from '../../components';
-import authContext from '../../contexts/auth/auth-context';
+import { RowView, SafeArea, Text } from '../../constants/styles';
 import { convertDateDMY, convertDateHM, convertMoney } from '../../utils';
-import api from '../../services/api';
 import styles from './styles';
 
+
 export default index = () => {
-  const { user, role, token } = useContext(authContext);
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -61,27 +58,13 @@ export default index = () => {
         </RowView>
 
         <View style={{ marginVertical: 20, alignItems: 'center' }}>
-          {role === 'ROLE_CLIENTE' ? (
-            <>
-              <Text fontSize="12px">MOTORISTA</Text>
-              <Text fontSize="17px" bold>
-                {frete.motorista?.nome || '-'}
-              </Text>
-              <Text fontSize="17px" bold>
-                {frete.motorista?.telefone || null}
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text fontSize="12px">CLIENTE</Text>
-              <Text fontSize="17px" bold>
-                {frete.cliente?.nome || '-'}
-              </Text>
-              <Text fontSize="17px" bold>
-                {frete.cliente?.telefone || frete.cliente?.email}
-              </Text>
-            </>
-          )}
+          <Text fontSize="12px">CLIENTE</Text>
+          <Text fontSize="17px" bold>
+            {frete.cliente?.nome || '-'}
+          </Text>
+          <Text fontSize="17px" bold>
+            {frete.cliente?.telefone || frete.cliente?.email}
+          </Text>
         </View>
 
         <View style={[styles.section]}>
@@ -338,32 +321,6 @@ export default index = () => {
           </View>
         </View>
       </ScrollView>
-      {/**
-         *
-        "automovel": {
-        "motor": "teste",
-        "comprimento": "10",
-        "altura": "10",
-        "largura": "10",
-
-        "img1": null,
-        "img2": null,
-        "img3": null,
-
-        "categoria": { "nome": "Herdeiro lele" }
-         */}
-      {frete.estadoFrete.nome !== 'Activo' ? null : (
-        <View style={styles.bottomBar}>
-          <Button
-            mode="contained"
-            onPress={() =>
-              navigation.navigate('tracking', { frete: solicitacao })
-            }
-          >
-            Acompanhamento / Tracking
-          </Button>
-        </View>
-      )}
     </SafeArea>
   );
 };

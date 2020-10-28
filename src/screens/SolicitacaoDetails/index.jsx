@@ -3,7 +3,6 @@ import {
   View,
   ScrollView,
   Modal,
-  DatePickerAndroid,
   Alert,
   ToastAndroid,
   Platform,
@@ -20,13 +19,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
-import {
-  convertDateHM,
-  convertDateDM,
-  convertDateDMY,
-  convertMoney,
-  convertDate,
-} from '../../utils';
+import { convertDateHM, convertDateDM } from '../../utils';
 import { CustomInput, CustomButton, HeaderBar } from '../../components';
 import authContext from '../../contexts/auth/auth-context';
 
@@ -92,36 +85,6 @@ export default index = () => {
       sendProposta();
     } else
       Alert.alert('Valor inválido', 'Informe um valor válido de proposta!');
-  };
-
-  const cancelarSolicitacao = solicitacaoId => {
-    Alert.alert(
-      'Cancelar Solicitação',
-      'Tem certeza que quer cancelar a sua solicitação?',
-      [
-        { text: 'Não', style: 'cancel' },
-        {
-          text: 'Sim',
-          onPress: async () => {
-            console.log(`/cancelar_solicitacao/${solicitacaoId}`);
-            try {
-              const response = await api(token).post(
-                `/cancelar_solicitacao/${solicitacaoId}`,
-              );
-              if (Platform.OS === 'android')
-                ToastAndroid.show(
-                  'A sua solicitação foi cancelada!',
-                  ToastAndroid.LONG,
-                );
-              navigation.navigate('solicitacoes');
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-      ],
-      { cancelable: true },
-    );
   };
 
   const onRegionChange = region => {
@@ -452,7 +415,7 @@ export default index = () => {
           </View>
 
           <View style={[styles.row, { justifyContent: 'space-evenly' }]}>
-            {!carga.perigosa ? null : (
+            {carga.perigosa && (
               <Chip
                 textStyle={{ fontSize: 12 }}
                 style={{ height: 30, justifyContent: 'center', marginRight: 3 }}
@@ -461,7 +424,7 @@ export default index = () => {
                 Carga perigosa
               </Chip>
             )}
-            {!carga.controlTemp ? null : (
+            {carga.controlTemp && (
               <Chip
                 textStyle={{ fontSize: 12 }}
                 style={{ height: 30, justifyContent: 'center' }}
@@ -475,39 +438,13 @@ export default index = () => {
       </ScrollView>
 
       <View style={styles.bottomBar}>
-        {role === 'ROLE_CLIENTE' ? (
-          <>
-            <Button
-              icon="close"
-              style={{
-                backgroundColor: colors.alert,
-                flex: 1,
-                marginRight: 10,
-              }}
-              mode="contained"
-              onPress={() => cancelarSolicitacao(solicitacao?.id)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              mode="contained"
-              style={{ flex: 1 }}
-              onPress={() =>
-                navigation.navigate('propostas', { solicitacao: solicitacao })
-              }
-            >
-              Ver Propostas
-            </Button>
-          </>
-        ) : (
-          <Button
-            mode="contained"
-            style={{ flex: 1 }}
-            onPress={() => setPropostaModalVisible(true)}
-          >
-            Fazer Proposta
-          </Button>
-        )}
+        <Button
+          mode="contained"
+          style={{ flex: 1 }}
+          onPress={() => setPropostaModalVisible(true)}
+        >
+          Fazer Proposta
+        </Button>
       </View>
 
       <Modal
